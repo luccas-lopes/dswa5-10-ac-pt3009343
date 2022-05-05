@@ -1,0 +1,100 @@
+//Lista de comandos:
+1. Comando para listar todos os bancos de dados vinculados ao cluster:
+show dbs;
+
+2. Comando para trocar de banco de dados atual:
+use ifsp; (use <database>)
+
+3. Variável para indicar o banco que estamos trabalhando:
+db;
+
+4. Exemplos de criação de variáveis para a inserção de documentos dentro do MongoDB;
+var contato = { "nome" : "Luccas Lopes", "email" : "lopesluccassilva@gmail.com" }
+var contato1 = { "nome" : "Renata Freitas", "email" : "freitasrenata@gmail.com" }
+var contato2 = { "nome" : "Leonardo Carvalho", "email" : "carvalholeonardo@gmail.com" }
+var contato3 = { "nome" : "Gabriel Freitas", "email" : "gabrielfreitas@gmail.com" }
+var contato4 = { "email" : "guest@gmail.com"};
+contato; // Printar variável.
+
+5. Adicionar documento a uma collection (Atualmente pelo que eu li no retorno do comando esse comando está descontinuado):
+db.contatos.insert(contato);
+
+
+6. Adicionar UM documento a uma collection:
+db.contatos.insertOne(contato1);
+
+7. Deletar UM documento de uma collection:
+db.contatos.deleteOne({"nome" : "Luccas Lopes"});
+
+8. Deletar Muitos documentos de uma collection:
+db.contatos.deleteMany({"nome" : "Luccas Lopes"});
+
+9. Listar Collections:
+show collections;
+
+10. Conta todos os documentos de uma collection:
+db.runCommand({count: 'contatos'});
+
+11. Busca documentos em uma collection:
+db.contatos.find();
+
+12. Busca o primeiro elemento dentro de uma collection:
+db.contatos.findOne();
+
+13. Encontra um documento a partir de uma condição/critério:
+var emailO = { "email" : "lopesluccassilva@gmail.com" };
+db.contatos.find(emailO);
+
+14. Encontra  odocumento que tenha o valor freitas como parte do nome:
+var condicao = { "nome" : /freitas/i };
+var contato = db.contatos.find(condicao);
+contato;
+
+15. O comando count() atualmente está em descontinuado mas ele é utilizado para contar documentos em uma collection, atualmente se usa os comandos countDocuments() ou estimatedDocumentCount();
+db.contatos.count();
+db.contatos.countDocuments();
+db.contatos.estimatedDocumentCount();
+
+16. Consulta documentos de acordo com lógicas condicionais:
+// Lógica condicional Ou:
+db.contatos.find({"$or" : [{ "email" : "lopesluccassilva@gmail.com"}, {"nome" : "Renata Freitas"}]});
+db.contatos.find({"$and" : [{ "email" : "freitasrenata@gmail.com"}, {"nome" : "Renata Freitas"}]});
+db.contatos.find({"email" : "gabrielfreitas@gmail.com"});
+
+17. Consultar documentos parciais:
+db.contatos.find({}, { "nome" : true });
+db.contatos.find({}, { "nome" : false });
+db.contatos.find({}, {"nome" : 1, _id: 0});
+db.contatos.find({}, {"email" : true, _id: 0 });
+
+18. Removendo documentos da collection (Atualmente, este comando está descontinuado, hoje é usado os comandos deleteOne(), deleteMany(), findOneAndDelete() ou bulkWrite()):
+db.contatos.remove({"email" : "guest@gmail.com"});
+db.contatos.deleteOne({"email" : "guest@gmail.com"});
+db.contatos.deleteMany({"email" : "guest@gmail.com"});
+db.contatos.findOneAndDelete({"email" : "guest@gmail.com"});
+
+18.1 O comando Bulk write é utilizado para performar operações que afetam collections singulares através de executar operações de inserções, atualizações e remoção por volume;
+    As operações do mesmo podem ser tanto ordenadas quando desordenadas;
+db.contatos.bulkWrite();
+
+19. Atualizando documentos da collection:
+contato = db.contatos.findOne({ "nome" : "Luccas Lopes" });
+contato;
+contato.nome = "Luccas Lopes Silva";
+db.contatos.update({"nome" : "Luccas Lopes"}, {$set: contato}); 
+db.contatos.find();
+
+20. O método upsert é utilizado para forçar a inserção de um documento quando atualiza-lo mesmo quando ele não exista na collection:
+contato = { "nome" : "Francisco Carvalho", "email" : "franciscocarvalho@gmail.com" };
+db.contatos.update({ "nome" : "Franscisco Carvalho" }, contato, true);
+db.contatos.find();
+
+21. Atualizando documentos embutidos, é quando há "documentos dentro de outros documentos", quando precisamos fazer um join com os dados que batem com cada documento:
+contato = db.contatos.findOne({ "nome" : "Luccas Lopes Silva" });
+var emergencia = db.contatos.findOne({ "nome" : "Renata Freitas" });
+contato.emergencia = emergencia;
+
+db.contatos.update({ "_id":contato._id}, {$set: contato});
+
+db.contatos.findOne({ "nome" : "Luccas Lopes Silva" });
+
