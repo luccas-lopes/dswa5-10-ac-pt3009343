@@ -15,7 +15,8 @@
         "express-load": "^1.1.16",
         "method-override": "^2.3.10",
         "mongodb": "^4.5.0",
-        "mongoose": "^6.3.2"
+        "mongoose": "^6.3.2",
+        "passport-github2": "^0.1.12"
     },
     "engines": {
         "node": "12.x"
